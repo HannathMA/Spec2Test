@@ -133,6 +133,14 @@ export const RequirementsPage: React.FC<RequirementsPageProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!projectId) {
+      setFeedbackMsg({
+        type: 'error',
+        text: 'No active project selected. Please wait for the project to load or select a project in the top header.'
+      });
+      return;
+    }
+
     setSubmitting(true);
     setFeedbackMsg(null);
     try {
@@ -158,6 +166,14 @@ export const RequirementsPage: React.FC<RequirementsPageProps> = ({
   const handleCreateTextRequirement = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reqText.trim()) return;
+
+    if (!projectId) {
+      setFeedbackMsg({
+        type: 'error',
+        text: 'No active project selected. Please wait for the project to load or select a project in the top header.'
+      });
+      return;
+    }
 
     setSubmitting(true);
     setFeedbackMsg(null);

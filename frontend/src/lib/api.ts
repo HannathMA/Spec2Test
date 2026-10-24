@@ -9,19 +9,31 @@ import {
   SettingsData,
   AcceptanceCriterion
 } from '../types';
-const RAW_API_URL = import.meta.env.VITE_API_URL ? String(import.meta.env.VITE_API_URL).trim().replace(/\/$/, '') : '';
+const RAW_API_URL = import.meta.env.VITE_API_URL 
+  ? String(import.meta.env.VITE_API_URL).trim().replace(/\/$/, '') 
+  : (import.meta.env.PROD ? 'https://spec2test-backend.onrender.com' : '');
 export const API_BASE = RAW_API_URL ? `${RAW_API_URL}/api/v1` : '/api/v1';
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     let errorDetail = res.statusText;
     try {
-      const err = await res.json();
-      errorDetail = err.detail || err.message || JSON.stringify(err);
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const err = await res.json();
+        errorDetail = err.detail || err.message || JSON.stringify(err);
+      } else {
+        const text = await res.text();
+        if (text.includes('<!doctype') || text.includes('<html')) {
+          errorDetail = 'Backend API is connecting or starting up on Render. Please wait 10-20 seconds and retry.';
+        } else if (text.length > 0 && text.length < 200) {
+          errorDetail = text;
+        }
+      }
     } catch {
       // ignore
     }
-    throw new Error(errorDetail);
+    throw new Error(errorDetail || `Request failed with status ${res.status}`);
   }
   return res.json();
 }

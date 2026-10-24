@@ -30,18 +30,22 @@ export function AppContent() {
   const [testRuns, setTestRuns] = useState<TestRun[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load projects initially
-  const loadProjects = async () => {
+  // Load projects initially with retry on cold start
+  const loadProjects = async (retries = 4) => {
     try {
       const list = await api.getProjects();
       setProjects(list);
-      if (list.length > 0 && !activeProject) {
-        // Prefer Commerce API Verification demo
-        const demo = list.find((p) => p.name === 'Commerce API Verification') || list[0];
-        setActiveProject(demo);
+      if (list.length > 0) {
+        setActiveProject((current) => {
+          if (current) return current;
+          return list.find((p) => p.name === 'Commerce API Verification') || list[0];
+        });
       }
     } catch (err) {
       console.error('Error loading projects:', err);
+      if (retries > 0) {
+        setTimeout(() => loadProjects(retries - 1), 3000);
+      }
     }
   };
 
