@@ -1,0 +1,16 @@
+{
+  "name": "spec2test-ai",
+  "version": "1.0.0",
+  "description": "Spec2Test AI — Real requirements. Executable tests. Verified software.",
+  "scripts": {
+    "dev": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "test:backend": "python -m pytest backend/tests/test_backend.py -v",
+    "seed": "python -c \"from backend.app.db.session import SessionLocal; from backend.app.demo.seed_data import seed_demo_data; db=SessionLocal(); seed_demo_data(db, force_reset=True); db.close(); print('Demo data seeded successfully!')\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

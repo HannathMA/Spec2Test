@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Build & Output
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+*.tsbuildinfo
+
+# Database & Runtime Data
+data/*.db
+data/test_*.db
+spec2test_run_*
+temp_run_*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+.vscode/
