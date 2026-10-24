@@ -9,8 +9,8 @@ import {
   SettingsData,
   AcceptanceCriterion
 } from '../types';
-
-const API_BASE = '/api/v1';
+const RAW_API_URL = import.meta.env.VITE_API_URL ? String(import.meta.env.VITE_API_URL).trim().replace(/\/$/, '') : '';
+export const API_BASE = RAW_API_URL ? `${RAW_API_URL}/api/v1` : '/api/v1';
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {

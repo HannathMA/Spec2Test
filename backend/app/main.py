@@ -1,3 +1,4 @@
+import os
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -50,10 +51,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
+# CORS configuration (allows localhost and Vercel production frontend)
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://localhost:4173",
+    "https://spec2-test.vercel.app",
+]
+extra_origins = os.getenv("ALLOWED_ORIGINS", "")
+if extra_origins:
+    for origin in extra_origins.split(","):
+        trimmed = origin.strip()
+        if trimmed and trimmed not in allowed_origins:
+            allowed_origins.append(trimmed)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permits localhost frontend dev server
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

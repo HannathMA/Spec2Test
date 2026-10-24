@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { TraceabilityMatrixResponse, TraceabilityRow } from '../../types';
-import { api } from '../../lib/api';
+import { api, API_BASE } from '../../lib/api';
 import { StatusBadge } from '../../components/common/StatusBadge';
 
 interface TraceabilityPageProps {
@@ -66,11 +66,11 @@ export const TraceabilityPage: React.FC<TraceabilityPageProps> = ({
   ];
 
   const handleExportCSV = () => {
-    window.open(`/api/v1/traceability/export/csv?project_id=${projectId}`, '_blank');
+    window.open(`${API_BASE}/traceability/export/csv?project_id=${projectId}`, '_blank');
   };
 
   const handleExportHTML = () => {
-    window.open(`/api/v1/traceability/export/html?project_id=${projectId}`, '_blank');
+    window.open(`${API_BASE}/traceability/export/html?project_id=${projectId}`, '_blank');
   };
 
   return (
