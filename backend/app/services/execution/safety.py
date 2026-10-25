@@ -34,7 +34,10 @@ def get_isolated_env(target_url: str) -> dict:
     Builds a minimal, sanitized environment for the pytest test subprocess.
     Strips out sensitive server credentials (AI API keys, DB passwords).
     """
-    safe_keys = ["PATH", "SYSTEMROOT", "WINDIR", "PYTHONPATH", "TEMP", "TMP"]
+    safe_keys = [
+        "PATH", "SYSTEMROOT", "WINDIR", "PYTHONPATH", "TEMP", "TMP",
+        "HOME", "USER", "VIRTUAL_ENV", "LANG", "LC_ALL", "PORT"
+    ]
     env = {k: os.environ[k] for k in safe_keys if k in os.environ}
     env["TEST_TARGET_URL"] = target_url
     env["PYTHONDONTWRITEBYTECODE"] = "1"

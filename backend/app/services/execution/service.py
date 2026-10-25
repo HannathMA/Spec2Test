@@ -1,3 +1,4 @@
+import os
 import sys
 import shutil
 import tempfile
@@ -192,6 +193,9 @@ def execute_project_tests(
         raise ValueError("Project not found")
 
     exec_target = target_url or project.target_url or "http://127.0.0.1:8000/demo-target"
+    port = os.environ.get("PORT")
+    if port and port != "8000":
+        exec_target = re.sub(r':8000\b', f':{port}', exec_target)
 
     query = db.query(TestCase).filter(TestCase.project_id == project_id)
     if test_case_ids:

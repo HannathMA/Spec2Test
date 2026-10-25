@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
@@ -19,6 +20,10 @@ def seed_demo_data(db: Session, force_reset: bool = False) -> Project:
     """
     existing_project = db.query(Project).filter(Project.name == DEMO_PROJECT_NAME).first()
     if existing_project and not force_reset:
+        current_target = f"http://127.0.0.1:{os.environ.get('PORT', '8000')}/demo-target"
+        if existing_project.target_url != current_target:
+            existing_project.target_url = current_target
+            db.commit()
         return existing_project
 
     if existing_project and force_reset:
@@ -29,7 +34,7 @@ def seed_demo_data(db: Session, force_reset: bool = False) -> Project:
     project = Project(
         name=DEMO_PROJECT_NAME,
         description="End-to-end verification suite for Commerce API core services: auth, cart boundaries, and payment idempotency.",
-        target_url="http://127.0.0.1:8000/demo-target",
+        target_url=f"http://127.0.0.1:{os.environ.get('PORT', '8000')}/demo-target",
         test_framework="pytest",
         environment="Staging",
         created_at=datetime.utcnow() - timedelta(hours=2)
